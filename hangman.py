@@ -2,6 +2,7 @@ import random
 import os
 import time
 
+bokstaver = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','x','y','z','å','ä','ö']
 def main(args=None):
     
     def get_hangman_art():
@@ -24,7 +25,18 @@ def main(args=None):
         word_list = data.split('\n') #splittar till lista vid rad-avslut
         number_of_words = len(word_list) #tar reda på antalet ord i listan
         return random.choice(word_list) #tar ett slumpvis ord ur listan
-     
+    def welcome_screen():
+        '''
+        Hälsa välkommen till Hangman och ge eventuella instruktion.
+        stanna på en input
+        '''
+        welcome_file = open("welcome.art","r", encoding='utf-8')
+        welcome = welcome_file.read()
+        os.system('cls')
+        print(welcome)
+        _ = input("Tryck Enter för att köra igång...")
+        return
+    
         
     def rita_bild(gissning):
         os.system('cls')
@@ -38,14 +50,18 @@ def main(args=None):
     ordet = get_word()
     maskerat = '_'* len(ordet) # Gör en maskerad sträng med samma längd som ordet
     resultat_gissning = []
+    welcome_screen()
+    
     while spelar: #kör tills spelar sätts till False
         #Printa Galge i ASCII art
         rita_bild(gissning)
         #Printa en lista med bokstäver som finns kvar att gissa på
+        print("Bokstäver kvar att gissa på:")
         print(*bokstaver)
         #print(ordet) # För debug, Printar rätt svar
-        print(maskerat)
-        print(resultat_gissning)
+        print(f"Ordet så här långt : {maskerat}")
+        print(f"{6 - gissning} gissningar kvar!")
+        #print(resultat_gissning) # För debuggin
         print(f'poäng: {poäng}')
         resultat_gissning = []
         bokstav = input("vilken bokstav gissar du på: ")
@@ -55,7 +71,8 @@ def main(args=None):
         #lägga in try här
         if bokstav in bokstaver and len(bokstav) == 1:
             bokstaver.remove(bokstav)
-            if bokstav not in list(ordet):
+            if bokstav not in list(ordet): 
+                # Felaktig gissning
                 gissning = gissning + 1
             for i in range(0, len(ordet)):
                 if ordet[i] == bokstav: #kollar om bokstaven finns i ordet på plats [i]
